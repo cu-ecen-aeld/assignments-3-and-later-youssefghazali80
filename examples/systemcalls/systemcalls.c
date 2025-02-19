@@ -16,8 +16,9 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
-
+    if (system(cmd) == 0)
     return true;
+    return false;
 }
 
 /**
@@ -58,7 +59,30 @@ bool do_exec(int count, ...)
  *   as second argument to the execv() command.
  *
 */
+    // fork to create a child process.
+    int pid = fork();
+    
+    if (pid < 0){
+        // Could fork the process.
+        return false;
+    }
+    else if (pid == 0 ){
+        // make the child process excutes the system command.
+        execv(command[0],command);
+        exit(1);
+        
+    }
+    else {
+        // make the parent wait till the child finsihes
+        int status;
+        wait(&status);
+        int return_value = WEXITSTATUS(status); 
+        if (return_value ==1){
+            return false;
+        }
 
+
+    }
     va_end(args);
 
     return true;
@@ -69,6 +93,8 @@ bool do_exec(int count, ...)
 *   This file will be closed at completion of the function call.
 * All other parameters, see do_exec above
 */
+
+
 bool do_exec_redirect(const char *outputfile, int count, ...)
 {
     va_list args;
@@ -93,7 +119,40 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *
 */
 
-    va_end(args);
+    int fd = open(outputfile , O_WRONLY | O_CREAT ,0644 );
+    if ( fd == -1){
+        return false;
+    }
 
+    // fork the process to generate the child process.
+    int pid = fork();
+    // redirects the output of the file to output file;
+    switch (pid){
+        case -1:
+            return false;
+        case 0:
+            // Child process.
+            // Redirects the output of the file to output fil
+            if(dup2(fd ,STDOUT_FILENO) <0){
+                exit(1);
+
+            }
+            else
+            {
+
+                close(fd);
+                execv(command[0],command);
+                exit(1);
+            
+            }
+        default:
+                close(fd);
+                int status;
+                wait(&status);
+                printf("Exit status: %d\n" ,WEXITSTATUS(status));
+
+    }
+
+    va_end(args);
     return true;
 }
