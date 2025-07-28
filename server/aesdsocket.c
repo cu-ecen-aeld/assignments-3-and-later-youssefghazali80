@@ -141,12 +141,15 @@ int  main (int argc , char * argv[])
 
      // This line specify that we will use IPV4 as our family
     server_addr.sin_family = AF_INET ; 
-
+    
     // This line to attach the socket to port 9000
     server_addr.sin_port = htons(PORT_NUMBER);  
-
+    /*
     // Convert the IP Address to binary format and save it in the address attribute of the addr struct
     inet_pton(AF_INET,"127.0.0.1",&server_addr.sin_addr); 
+    */
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);       // 0.0.0.0
+
 
     // binding the socket to the IP we want.  
     if ( bind (server_fd,(struct sockaddr * )&server_addr , sizeof(server_addr)  ) < 0){
