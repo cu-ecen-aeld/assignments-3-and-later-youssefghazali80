@@ -13,6 +13,7 @@ case "$1" in
 	  echo "Use Start or stop with this Script"
 	  exit 1
 	  ;;
+esac	  
 exit 0	  
 	   
 	  
