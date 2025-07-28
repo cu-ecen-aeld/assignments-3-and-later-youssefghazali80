@@ -3,11 +3,11 @@
 case "$1" in 
 	 start)
 	  echo "Starting the Socket..."
-	  start-stop-daemon -S -n   SOCKET_SERVER  --exec /usr/bin/aesdsocket -d
+	  start-stop-daemon -S -n SOCKET_SERVER  --exec /usr/bin/aesdsocket -- -d
 	  ;;
 	 stop)
 	  echo "Ending the socket..."
-	  start-stop-daemon -K SOCKET_SERVER
+	  start-stop-daemon -K -n SOCKET_SERVER
 	  ;;
 	  *)
 	  echo "Use Start or stop with this Script"
