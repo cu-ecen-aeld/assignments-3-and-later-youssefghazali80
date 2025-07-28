@@ -249,7 +249,11 @@ int  main (int argc , char * argv[])
                     }
 
             }
-            close (client_fd);
+            if (packet_completed == TRUE){
+            	close (client_fd);
+            	connection_lost = TRUE;
+            	
+            }
             packet_completed = FALSE;
             fclose(fp);
             
