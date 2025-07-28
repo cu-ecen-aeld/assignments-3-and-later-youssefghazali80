@@ -249,6 +249,7 @@ int  main (int argc , char * argv[])
                     }
 
             }
+            close (client_fd);
             packet_completed = FALSE;
             fclose(fp);
             
